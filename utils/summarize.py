@@ -1,29 +1,65 @@
 import os
+import time
 from dotenv import load_dotenv
 from google import genai
+from google.genai.errors import ServerError
 
 load_dotenv()
 
 client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
 
-def generate_summary(topic):
+
+def generate_summary(topic, search_results):
+
+    context = ""
+
+    for result in search_results:
+        context += f"""
+Title: {result['title']}
+URL: {result['url']}
+Content: {result['content']}
+
+"""
+
     prompt = f"""
 You are an AI Research Assistant.
 
-Research the topic: {topic}
+Research Topic:
+{topic}
 
-Return:
-1. Overview
-2. Key Points
-3. Applications
-4. Future Scope
+Use ONLY the information below.
 
-Keep it simple and professional.
+{context}
+
+Generate a report with:
+
+# Overview
+
+# Key Findings
+
+# Important Insights
+
+# Applications
+
+# Future Scope
+
+Finally add a section:
+
+# References
+
+List every URL used.
 """
 
-    response = client.models.generate_content(
-        model="gemini-flash-latest",
-        contents=prompt,
-    )
+    for attempt in range(3):
+        try:
+            response = client.models.generate_content(
+                model="gemini-flash-latest",
+                contents=prompt
+            )
+            return response.text
 
-    return response.text
+        except ServerError:
+            if attempt < 2:
+                time.sleep(3)
+            else:
+                return "⚠️ Gemini is currently experiencing high traffic. Please try again in a few moments."
