@@ -1,0 +1,170 @@
+/* =====================================================
+   AI Research Agent - Professional Theme
+   ===================================================== */
+
+/* Import Font */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+/* ---------- Global ---------- */
+
+html,
+body,
+[class*="css"] {
+    font-family: 'Inter', sans-serif;
+}
+
+/* Main content */
+
+.main .block-container {
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+    padding-left: 3rem;
+    padding-right: 3rem;
+}
+
+/* ---------- Sidebar ---------- */
+
+section[data-testid="stSidebar"] {
+    background: #F8FAFC;
+    border-right: 1px solid #E5E7EB;
+}
+
+section[data-testid="stSidebar"] h1 {
+    color: #1E3A8A;
+}
+
+section[data-testid="stSidebar"] h2,
+section[data-testid="stSidebar"] h3 {
+    color: #374151;
+}
+
+/* ---------- Buttons ---------- */
+
+.stButton > button {
+
+    width: 100%;
+
+    height: 52px;
+
+    border-radius: 12px;
+
+    border: none;
+
+    background: #2563EB;
+
+    color: white;
+
+    font-size: 16px;
+
+    font-weight: 600;
+
+    transition: all .25s ease;
+}
+
+.stButton > button:hover {
+
+    background: #1D4ED8;
+
+    transform: translateY(-2px);
+
+    box-shadow: 0 10px 25px rgba(37,99,235,.25);
+}
+
+/* ---------- Download Button ---------- */
+
+.stDownloadButton > button {
+
+    width: 100%;
+
+    border-radius: 10px;
+
+    border: 1px solid #2563EB;
+
+    background: white;
+
+    color: #2563EB;
+
+    font-weight: 600;
+}
+
+.stDownloadButton > button:hover {
+
+    background: #EFF6FF;
+}
+
+/* ---------- Text Input ---------- */
+
+.stTextInput input {
+
+    border-radius: 12px;
+
+    border: 1px solid #D1D5DB;
+
+    padding: 12px;
+}
+
+.stTextInput input:focus {
+
+    border-color: #2563EB;
+}
+
+/* ---------- Metrics ---------- */
+
+div[data-testid="metric-container"] {
+
+    background: white;
+
+    border: 1px solid #E5E7EB;
+
+    border-radius: 14px;
+
+    padding: 20px;
+
+    box-shadow: 0 8px 24px rgba(0,0,0,.05);
+}
+
+/* ---------- Expanders ---------- */
+
+details {
+
+    border: 1px solid #E5E7EB;
+
+    border-radius: 12px;
+
+    margin-bottom: 12px;
+
+    background: white;
+}
+
+/* ---------- Progress ---------- */
+
+div[data-testid="stProgress"] > div > div {
+
+    background-color: #2563EB;
+}
+
+/* ---------- Success ---------- */
+
+div[data-testid="stSuccess"] {
+
+    border-radius: 12px;
+}
+
+/* ---------- Warning ---------- */
+
+div[data-testid="stWarning"] {
+
+    border-radius: 12px;
+}
+
+/* ---------- Footer ---------- */
+
+footer {
+
+    visibility: hidden;
+}
+
+header {
+
+    visibility: hidden;
+}
