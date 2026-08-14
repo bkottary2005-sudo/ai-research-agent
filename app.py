@@ -11,18 +11,18 @@ from utils.summarize import generate_summary
 
 st.set_page_config(
     page_title="AI Research Agent",
-    page_icon="📄",
+    page_icon="AI",
     layout="wide"
 )
 
 
 # ---------------------------------------------------------
-# Load CSS
+# Load Custom CSS
 # ---------------------------------------------------------
 
 def load_css():
     try:
-        with open("assets/style.css") as css:
+        with open("assets/style.css", encoding="utf-8") as css:
             st.markdown(
                 f"<style>{css.read()}</style>",
                 unsafe_allow_html=True
@@ -32,6 +32,14 @@ def load_css():
 
 
 load_css()
+
+
+# ---------------------------------------------------------
+# Research History
+# ---------------------------------------------------------
+
+if "research_history" not in st.session_state:
+    st.session_state.research_history = []
 
 
 # ---------------------------------------------------------
@@ -48,9 +56,9 @@ with st.sidebar:
 
     st.write(
         """
-AI Research Agent is an intelligent research assistant
-that combines live web search with Google Gemini AI to
-generate structured research reports from current information.
+AI Research Agent combines live web search with Google Gemini AI
+to generate structured research reports using current information
+from online sources.
 """
     )
 
@@ -66,6 +74,36 @@ generate structured research reports from current information.
 - Tavily Search API
 """
     )
+
+    st.markdown("---")
+
+    st.subheader("Research History")
+
+    if st.session_state.research_history:
+
+        for item in st.session_state.research_history:
+
+            st.markdown(
+                f"**{item['topic']}**"
+            )
+
+            st.caption(
+                f"{item['sources']} sources"
+            )
+
+            st.markdown("---")
+
+    else:
+
+        st.caption("No research reports generated yet.")
+
+    if st.session_state.research_history:
+
+        if st.button("Clear History", use_container_width=True):
+
+            st.session_state.research_history = []
+
+            st.rerun()
 
     st.markdown("---")
 
@@ -97,12 +135,12 @@ and Google Gemini AI.
 
 </div>
 """,
-    unsafe_allow_html=True,
+    unsafe_allow_html=True
 )
 
 
 # ---------------------------------------------------------
-# Statistics
+# Initial Statistics
 # ---------------------------------------------------------
 
 metric1, metric2, metric3 = st.columns(3)
@@ -114,14 +152,17 @@ with metric2:
     st.metric("AI Model", "Gemini")
 
 with metric3:
-    st.metric("Status", "Ready")
+    st.metric(
+        "Reports",
+        len(st.session_state.research_history)
+    )
 
 
 st.divider()
 
 
 # ---------------------------------------------------------
-# Input
+# Research Input
 # ---------------------------------------------------------
 
 topic = st.text_input(
@@ -131,12 +172,12 @@ topic = st.text_input(
 
 
 # ---------------------------------------------------------
-# Generate
+# Generate Research Report
 # ---------------------------------------------------------
 
 if st.button("Generate Report", use_container_width=True):
 
-    if topic.strip() == "":
+    if not topic.strip():
 
         st.warning("Please enter a research topic.")
 
@@ -145,30 +186,52 @@ if st.button("Generate Report", use_container_width=True):
         try:
 
             progress = st.progress(0)
-
             status = st.empty()
+
+            # ---------------------------------------------
+            # Web Search
+            # ---------------------------------------------
 
             status.info("Searching the web...")
             progress.progress(20)
 
             results = search_web(topic)
 
-            progress.progress(45)
+            # ---------------------------------------------
+            # Read Sources
+            # ---------------------------------------------
 
-            status.info("Reading sources...")
+            progress.progress(45)
+            status.info("Analyzing research sources...")
 
             time.sleep(0.5)
 
-            progress.progress(65)
+            # ---------------------------------------------
+            # Generate AI Report
+            # ---------------------------------------------
 
+            progress.progress(65)
             status.info("Generating research report...")
 
-            summary = generate_summary(topic, results)
+            summary = generate_summary(
+                topic,
+                results
+            )
+
+            # ---------------------------------------------
+            # Complete
+            # ---------------------------------------------
 
             progress.progress(100)
 
+            time.sleep(0.3)
+
             status.empty()
             progress.empty()
+
+            # ---------------------------------------------
+            # Handle AI Response
+            # ---------------------------------------------
 
             if summary.startswith("⚠️"):
 
@@ -176,57 +239,112 @@ if st.button("Generate Report", use_container_width=True):
 
             else:
 
-                st.success("Research report generated successfully.")
+                st.success(
+                    "Research report generated successfully."
+                )
+
+                # -----------------------------------------
+                # Save Research History
+                # -----------------------------------------
+
+                history_item = {
+                    "topic": topic,
+                    "summary": summary,
+                    "sources": len(results)
+                }
+
+                st.session_state.research_history.insert(
+                    0,
+                    history_item
+                )
+
+                # Keep only the latest 5 reports
+                st.session_state.research_history = (
+                    st.session_state.research_history[:5]
+                )
+
+                # -----------------------------------------
+                # Download Report
+                # -----------------------------------------
 
                 st.download_button(
-                    "Download Report",
-                    summary,
-                    file_name=f"{topic}.md",
+                    label="Download Report",
+                    data=summary,
+                    file_name=f"{topic.replace(' ', '_')}_research.md",
                     mime="text/markdown"
                 )
 
                 st.markdown("---")
 
+                # -----------------------------------------
+                # Research Report
+                # -----------------------------------------
+
+                st.subheader("Research Report")
+
                 st.markdown(summary)
+
+            # ---------------------------------------------
+            # Sources
+            # ---------------------------------------------
 
             st.markdown("---")
 
             st.subheader("Research Sources")
 
-            for i, result in enumerate(results, start=1):
+            for i, result in enumerate(
+                results,
+                start=1
+            ):
 
-                with st.expander(f"{i}. {result['title']}"):
+                with st.expander(
+                    f"{i}. {result['title']}"
+                ):
 
-                    st.write(result["content"])
+                    st.write(
+                        result["content"]
+                    )
 
                     st.link_button(
                         "View Source",
                         result["url"],
-                        use_container_width=True,
+                        use_container_width=True
                     )
+
+            # ---------------------------------------------
+            # Report Statistics
+            # ---------------------------------------------
 
             st.markdown("---")
 
             col1, col2, col3 = st.columns(3)
 
             with col1:
-                st.metric("Sources Used", len(results))
+
+                st.metric(
+                    "Sources Used",
+                    len(results)
+                )
 
             with col2:
+
                 st.metric(
                     "Words",
                     len(summary.split())
                 )
 
             with col3:
+
                 st.metric(
-                    "Report",
-                    "Generated"
+                    "Reports",
+                    len(st.session_state.research_history)
                 )
 
         except Exception as e:
 
-            st.error(f"Error: {e}")
+            st.error(
+                f"An unexpected error occurred.\n\n{e}"
+            )
 
 
 # ---------------------------------------------------------
@@ -237,13 +355,15 @@ st.markdown("---")
 
 st.markdown(
     """
-<div style="text-align:center;color:gray;font-size:14px;padding:20px;">
+<div style="text-align:center;color:#6B7280;font-size:14px;padding:20px;">
 
 AI Research Agent
+
+<br>
 
 Developed by <b>Bhoomika K Kottary</b>
 
 </div>
 """,
-    unsafe_allow_html=True,
+    unsafe_allow_html=True
 )
