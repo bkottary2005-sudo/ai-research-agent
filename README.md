@@ -1,108 +1,56 @@
 # AI Research Agent
 
-An AI-powered research assistant that combines live web search with Google Gemini to generate structured and source-backed research reports.
-
-The application searches the web for current information, analyzes the collected sources using Gemini, and presents the findings in a clean Streamlit interface.
-
----
+An AI-powered research assistant that combines live web search with Google Gemini to generate structured, source-backed research reports.
 
 ## Overview
 
-Traditional AI chat applications often rely only on the model's existing knowledge.
+AI Research Agent helps users quickly research any topic by collecting current information from the web and using Google Gemini to transform the collected information into a structured research report.
 
-This project takes a different approach by combining:
-
-- Live web search
-- AI-powered analysis
-- Automated summarization
-- Source references
-- Research report generation
-
-The result is an end-to-end research workflow that can be used to quickly explore technical, scientific, business, and general topics.
-
----
+The application is built with Python and Streamlit and integrates the Tavily Search API for web research and the Google Gemini API for AI-powered analysis and summarization.
 
 ## Features
 
-### Live Web Research
-
-Uses the Tavily Search API to retrieve current information from the web.
-
-### AI-Powered Analysis
-
-Google Gemini analyzes the collected research material and generates a structured report.
-
-### Structured Research Reports
-
-Reports are organized into sections such as:
-
-- Overview
-- Key Findings
-- Important Insights
-- Applications
-- Future Scope
-- References
-
-### Source References
-
-The application displays the sources used during the research process with links to the original articles.
-
-### Research Progress
-
-The interface provides visual progress updates while:
-
-1. Searching the web
-2. Analyzing sources
-3. Generating the report
-
-### Report Download
-
-Generated reports can be downloaded as Markdown files.
-
-### Research History
-
-The application maintains recent research topics during the session.
-
-### Professional Streamlit Interface
-
-The application includes:
-
-- Responsive layout
-- Sidebar navigation
+- Live web search using Tavily
+- AI-powered research using Google Gemini
+- Automated research report generation
+- Structured reports with:
+  - Overview
+  - Key Findings
+  - Important Insights
+  - Applications
+  - Future Scope
+  - References
+- Source links for researched information
+- Research progress indicators
 - Research statistics
-- Expandable source sections
-- Custom CSS styling
-- Clean research dashboard
+- Download generated reports as Markdown
+- Research history
+- Clean and responsive Streamlit interface
+- Environment variable support for API keys
 
----
-
-## Architecture
+## How It Works
 
 ```text
-                    User
-                     |
-                     v
-              Research Topic
-                     |
-                     v
-              Streamlit UI
-                     |
-                     v
-              Tavily Search
-                     |
-                     v
-             Web Search Results
-                     |
-                     v
-             Google Gemini AI
-                     |
-                     v
-           Research Report
-                     |
-          +----------+----------+
-          |                     |
-          v                     v
-     Report Display        Source Links
+User enters research topic
           |
           v
-    Markdown Download
+     Streamlit UI
+          |
+          v
+     Tavily Web Search
+          |
+          v
+   Relevant Web Sources
+          |
+          v
+    Google Gemini AI
+          |
+          v
+ Structured Research Report
+          |
+          +----------------+
+          |                |
+          v                v
+    Report Display     References
+          |
+          v
